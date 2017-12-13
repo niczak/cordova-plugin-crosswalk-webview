@@ -106,25 +106,34 @@ public class XWalkCordovaResourceClient extends XWalkResourceClient {
     * or callback.onReceiveValue(false). Note that the decision may be
     * retained for use in response to future SSL errors. The default behavior
     * is to pop up a dialog.
+    *
+    *  UPDATED TO IGNORE SSL ERRORS
     */
     @Override
-    public void onReceivedSslError(XWalkView view, ValueCallback<Boolean> callback, SslError error) {
-        final String packageName = parentEngine.cordova.getActivity().getPackageName();
-        final PackageManager pm = parentEngine.cordova.getActivity().getPackageManager();
+    public void onReceivedSslError(WebView view, SslErrorHandler handler, SslError error) 
+    {
+        final String packageName = this.cordova.getActivity().getPackageName();
+        final PackageManager pm = this.cordova.getActivity().getPackageManager();
 
         ApplicationInfo appInfo;
         try {
             appInfo = pm.getApplicationInfo(packageName, PackageManager.GET_META_DATA);
             if ((appInfo.flags & ApplicationInfo.FLAG_DEBUGGABLE) != 0) {
                 // debug = true
-                callback.onReceiveValue(true);
+                handler.proceed();
+                return;
             } else {
-                // debug = false
-                callback.onReceiveValue(false);
+              // debug = false
+              // THIS IS WHAT YOU NEED TO CHANGE:
+              // 1. COMMENT THIS LINE
+              // super.onReceivedSslError(view, handler, error);
+              // 2. ADD THESE TWO LINES
+              handler.proceed();
+              return;
             }
-        } catch (PackageManager.NameNotFoundException e) {
+        } catch (PackageHandler.NameNotFoundException e) {
             // When it doubt, lock it out!
-            callback.onReceiveValue(false);
+            super.onReceivedSslError(view, handler, error);
         }
     }
 
