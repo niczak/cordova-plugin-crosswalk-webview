@@ -1,3 +1,7 @@
+# This is a hacked version and should not be used for production!  Please visit the original repo if you want the real thing. 
+
+### Cheers! - [@niczak](https://twitter.com/niczak)
+
 # cordova-plugin-crosswalk-webview
 
 Makes your Cordova application use the [Crosswalk WebView](https://crosswalk-project.org/)
